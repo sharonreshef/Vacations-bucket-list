@@ -57,6 +57,13 @@ router.post(
 
     const { firstName, lastName, email, userPassword } = req.body;
 
+    user = {
+      firstName,
+      lastName,
+      email,
+      userPassword
+    };
+
     try {
       console.log(firstName, lastName, email, userPassword);
       const [results, fields] = await pool.execute(
@@ -73,31 +80,33 @@ router.post(
           .json({ errors: [{ msg: 'User already exists' }] });
       }
 
-      // const salt = await bycrypt.genSalt(10);
+      const salt = await bycrypt.genSalt(10);
 
-      // userPassword = await bycrypt.hash(userPassword, salt);
+      hashPassword = await bycrypt.hash(userPassword, salt);
+      console.log(hashPassword);
 
       await pool.execute(
-        `INSERT INTO users (firstName, lastName, email, userPassword) VALUES (?, ?, ?, ?)`,
-        [firstName, lastName, email, userPassword]
+        `INSERT INTO users (firstName, lastName, email, userPassword) VALUES (?, ?, ?, ?);`,
+        [firstName, lastName, email, hashPassword]
       );
       res.send({ status: 'success', firstName: firstName });
+      console.log(userPassword);
 
-      // const payload = {
-      //   user: {
-      //     id: user.id
-      //   }
-      // };
+      const payload = {
+        user: {
+          email: email
+        }
+      };
 
-      // jwt.sign(
-      //   payload,
-      //   config.get('jwtSecret'),
-      //   { expiresIn: 3600000 },
-      //   (err, token) => {
-      //     if (err) throw err;
-      //     res.json({ token });
-      //   }
-      // );
+      jwt.sign(
+        payload,
+        config.get('jwtSecret'),
+        { expiresIn: 3600000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
