@@ -89,12 +89,15 @@ router.post(
         `INSERT INTO users (firstName, lastName, email, userPassword) VALUES (?, ?, ?, ?);`,
         [firstName, lastName, email, hashPassword]
       );
-      res.send({ status: 'success', firstName: firstName });
+      const [user] = await pool.execute(`SELECT * FROM users WHERE email=?`, [
+        email
+      ]);
+      res.send({ status: 'success', firstName: firstName, user: user });
       console.log(userPassword);
 
       const payload = {
         user: {
-          email: email
+          id: user[0].id
         }
       };
 

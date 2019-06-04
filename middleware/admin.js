@@ -11,8 +11,8 @@ module.exports = async function(req, res, next) {
   });
 
   const [rows, fields] = await connection.execute(
-    'SELECT * FROM users WHERE email = ?',
-    [req.user.email]
+    'SELECT * FROM users WHERE id = ?',
+    [req.user.id]
   );
 
   try {

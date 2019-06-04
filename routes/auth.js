@@ -60,7 +60,6 @@ router.post(
       WHERE email=?`,
         [email]
       );
-      console.log('getting results', results);
       if (results < 0) {
         return res
           .status(400)
@@ -79,7 +78,7 @@ router.post(
 
       const payload = {
         user: {
-          email: results[0].email
+          id: results[0].id
         }
       };
 

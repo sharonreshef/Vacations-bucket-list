@@ -116,4 +116,37 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// @route   PUT /vacations/follow/:id
+// @desc    Follow a vacation
+// @access  Private
+router.put('/follow/:id', auth, async (req, res) => {
+  try {
+    const [vacation] = await pool.execute(
+      `SELECT * FROM vacations WHERE id=?`,
+      [req.params.id]
+    );
+
+    const [likedVacations] = await pool.execute(
+      'SELECT * FROM savedvacations WHERE userID = ? AND vacationID = ?',
+      [req.user.id, vacation[0].id]
+    );
+
+    if (likedVacations < 0) {
+      await pool.execute(
+        `INSERT INTO savedvacations (userID, vacationID) VALUES (?, ?);`,
+        [req.user.id, vacation[0].id]
+      );
+
+      res.send({
+        status: 'success'
+      });
+    } else {
+      return res.status(400).json({ msg: 'Vacation already followed by user' });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(404).json({ msg: 'Post not found' });
+  }
+});
+
 module.exports = router;
