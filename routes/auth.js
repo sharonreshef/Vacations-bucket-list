@@ -60,7 +60,7 @@ router.post(
       WHERE email=?`,
         [email]
       );
-      console.log(results);
+      console.log('getting results', results);
       if (results < 0) {
         return res
           .status(400)
