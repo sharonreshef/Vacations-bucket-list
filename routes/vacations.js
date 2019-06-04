@@ -130,18 +130,61 @@ router.put('/follow/:id', auth, async (req, res) => {
       'SELECT * FROM savedvacations WHERE userID = ? AND vacationID = ?',
       [req.user.id, vacation[0].id]
     );
-
-    if (likedVacations < 0) {
+    console.log(likedVacations.length);
+    if (likedVacations.length === 0) {
       await pool.execute(
         `INSERT INTO savedvacations (userID, vacationID) VALUES (?, ?);`,
         [req.user.id, vacation[0].id]
       );
+
+      if (vacation[0].followers === null) {
+        await pool.execute(`UPDATE vacations SET followers=? WHERE id=?`, [
+          1,
+          req.params.id
+        ]);
+        console.log('1 follower added');
+      } else {
+        await pool.execute(`UPDATE vacations SET followers=? WHERE id=?`, [
+          vacation[0].followers + 1,
+          req.params.id
+        ]);
+        console.log(`${vacation[0].followers + 1} added`);
+      }
 
       res.send({
         status: 'success'
       });
     } else {
       return res.status(400).json({ msg: 'Vacation already followed by user' });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(404).json({ msg: 'Post not found' });
+  }
+});
+
+// @route   PUT /unfollow/:id
+// @desc    Unike a post
+// @access  Private
+router.put('/unfollow/:id', auth, async (req, res) => {
+  try {
+    const [likedVacations] = await pool.execute(
+      'DELETE from savedvacations WHERE vacationID = ? and userID = ?',
+      [req.params.id, req.user.id]
+    );
+
+    console.log(likedVacations.affectedRows);
+    if (likedVacations.affectedRows > 0) {
+      const [vacation] = await pool.execute(
+        `SELECT * FROM vacations WHERE id=?`,
+        [req.params.id]
+      );
+      res.send('deleted saved vacation');
+      await pool.execute(`UPDATE vacations SET followers=? WHERE id=?`, [
+        vacation[0].followers - 1,
+        req.params.id
+      ]);
+      console.log(`${vacation[0].followers - 1} followers`);
     }
   } catch (err) {
     console.error(err.message);
