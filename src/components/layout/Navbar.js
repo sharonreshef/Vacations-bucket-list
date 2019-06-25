@@ -7,7 +7,7 @@ const Navbar = () => {
       <nav className='navbar bg-dark'>
         <h1>
           <Link to='/'>
-            <i className='fas fa-globe-americas' /> My Bucketlist Vacation
+            <i className='fas fa-globe-americas' /> My Vacations Bucket List
           </Link>
         </h1>
         <ul>

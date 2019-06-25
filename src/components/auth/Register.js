@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
   ///state = {
@@ -9,23 +11,38 @@ const Register = () => {
   //   }
 
   const [formData, setFormData] = useState({
-    name: '',
+    fisrstName: '',
+    lasttName: '',
     email: '',
-    password: '',
-    password2: ''
+    userPassword: '',
+    userPassword2: ''
   });
 
-  const { name, email, password, password2 } = formData;
+  const { firstName, lastName, email, userPassword, userPassword2 } = formData;
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
-    if (password !== password2) {
+    if (userPassword !== userPassword2) {
       console.log('Passwords do not match');
     } else {
-      console.log(formData);
+      const newUser = {
+        firstName,
+        lastName,
+        email,
+        userPassword
+      };
+      const response = await fetch(`http://localhost:5000/users/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newUser)
+      })
+        .then(response => response.json())
+        .then(response => console.log(response));
     }
   };
 
@@ -39,9 +56,19 @@ const Register = () => {
         <div className='form-group'>
           <input
             type='text'
-            placeholder='Name'
-            name='name'
-            value={name}
+            placeholder='First Name'
+            name='firstName'
+            value={firstName}
+            onChange={e => onChange(e)}
+            required
+          />
+        </div>
+        <div className='form-group'>
+          <input
+            type='text'
+            placeholder='Last Name'
+            name='lastName'
+            value={lastName}
             onChange={e => onChange(e)}
             required
           />
@@ -60,9 +87,9 @@ const Register = () => {
           <input
             type='password'
             placeholder='Password'
-            name='password'
+            name='userPassword'
             minLength='6'
-            value={password}
+            value={userPassword}
             onChange={e => onChange(e)}
           />
         </div>
@@ -70,16 +97,16 @@ const Register = () => {
           <input
             type='password'
             placeholder='Confirm Password'
-            name='password2'
+            name='userPassword2'
             minLength='6'
-            value={password2}
+            value={userPassword2}
             onChange={e => onChange(e)}
           />
         </div>
         <input type='submit' className='btn btn-primary' value='Register' />
       </form>
       <p className='my-1'>
-        Already have an account? <a href='login.html'>Sign In</a>
+        Already have an account? <Link to='/login'>Sign In</Link>
       </p>
     </Fragment>
   );
