@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 const Login = () => {
   ///state = {
@@ -34,7 +33,7 @@ const Login = () => {
       body: JSON.stringify(user)
     })
       .then(response => response.json())
-      .then(response => console.log(response));
+      .then(response => console.log(response.token));
   };
 
   return (
@@ -64,7 +63,7 @@ const Login = () => {
             onChange={e => onChange(e)}
           />
         </div>
-        <input type='submit' className='btn btn-primary' value='Register' />
+        <input type='submit' className='btn btn-primary' value='Login' />
       </form>
       <p className='my-1'>
         Don`t have an account? <Link to='/register'>Register</Link>
