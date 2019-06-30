@@ -109,7 +109,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(`SELECT * FROM vacations`);
-    res.send(vacations);
+    res.json(vacations);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

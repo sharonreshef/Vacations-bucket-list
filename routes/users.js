@@ -22,10 +22,6 @@ let pool;
 router.get('/', async (req, res) => {
   console.log('test', req.test);
   const [results, fields] = await pool.execute(`SELECT * FROM users`);
-  // line 13 is equivalent to this:
-  // const arr = await connection.execute(`SELECT * FROM Movies`);
-  // const results = arr[0];
-  // const fields = arr[1];
 
   res.send(results);
 });
@@ -92,8 +88,7 @@ router.post(
       const [user] = await pool.execute(`SELECT * FROM users WHERE email=?`, [
         email
       ]);
-      res.send({ status: 'success', firstName: firstName, user: user });
-      console.log(userPassword);
+      // res.send({ status: 'success', firstName: firstName, user: user });
 
       const payload = {
         user: {
@@ -104,10 +99,10 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 3600000 },
+        { expiresIn: 36000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          res.send({ token });
         }
       );
     } catch (err) {
