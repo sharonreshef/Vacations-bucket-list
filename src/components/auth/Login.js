@@ -1,14 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
 
-const Login = () => {
-  ///state = {
-  //       formData: {
-  //           name: '',
-  //           email: ''
-  //       }
-  //   }
-
+const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: '',
     userPassword: ''
@@ -20,21 +16,26 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async e => {
-    const user = {
-      email,
-      userPassword
-    };
+    // const user = {
+    //   email,
+    //   userPassword
+    // };
     e.preventDefault();
-    const response = await fetch(`http://localhost:5000/auth/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-      .then(response => response.json())
-      .then(response => console.log(response.token));
+    login(email, userPassword);
+    // const response = await fetch(`http://localhost:5000/auth/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(user)
+    // })
+    //   .then(response => response.json())
+    //   .then(response => console.log(response.token));
   };
+
+  if (isAuthenticated) {
+    return <Redirect to='/dashboard' />;
+  }
 
   return (
     <Fragment>
@@ -72,4 +73,16 @@ const Login = () => {
   );
 };
 
-export default Login;
+login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(
+  mapStateToProps,
+  { login }
+)(Login);
