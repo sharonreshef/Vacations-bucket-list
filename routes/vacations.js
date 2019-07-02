@@ -15,7 +15,8 @@ let pool;
     database: 'mynextvacation',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    dateStrings: true
   });
 })();
 
@@ -109,6 +110,25 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(`SELECT * FROM vacations`);
+    res.json(vacations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET /vacations
+// @desc    Get all vacations
+// @access  Private
+
+router.get('/followed', auth, async (req, res) => {
+  try {
+    const [vacations, fields] = await pool.execute(
+      `SELECT * from vacations
+    INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
+    WHERE savedvacations.userID = ?`,
+      [req.user.id]
+    );
     res.json(vacations);
   } catch (err) {
     console.error(err.message);

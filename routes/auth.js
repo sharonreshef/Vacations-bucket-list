@@ -26,8 +26,8 @@ let pool;
 router.get('/', auth, async (req, res) => {
   try {
     const [results, fields] = await pool.execute(
-      'select * from users where email=?',
-      [req.user.email]
+      'select * from users where id=?',
+      [req.user.id]
     );
     res.json(results[0]);
   } catch (err) {

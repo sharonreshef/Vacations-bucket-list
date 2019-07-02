@@ -20,7 +20,7 @@ module.exports = async function(req, res, next) {
       return res.status(400).json({ errors: [{ msg: 'User is not Admin' }] });
     }
     next();
-  } catch {
+  } catch (err) {
     res.status(401).json({ msg: 'User is not Admin' });
   }
 };
