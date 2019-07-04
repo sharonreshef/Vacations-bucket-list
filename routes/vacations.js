@@ -180,8 +180,7 @@ router.put('/follow/:id', auth, async (req, res) => {
         .json({ errors: [{ msg: 'Vacation already followed by user' }] });
     }
   } catch (err) {
-    console.error(err.message);
-    res.status(404).json({ msg: 'Vacation not found' });
+    res.status(404).json({ errors: [{ msg: 'Vacation not found' }] });
   }
 });
 
