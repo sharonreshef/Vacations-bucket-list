@@ -117,14 +117,14 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route   GET /vacations
-// @desc    Get all vacations
+// @route   GET /vacations/foollowed
+// @desc    Get all vacations followed by user
 // @access  Private
 
 router.get('/followed', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(
-      `SELECT * from vacations
+      `SELECT vacations.* from vacations
     INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
     WHERE savedvacations.userID = ?`,
       [req.user.id]
@@ -146,12 +146,12 @@ router.put('/follow/:id', auth, async (req, res) => {
       [req.params.id]
     );
 
-    const [likedVacations] = await pool.execute(
+    const [likedVacation] = await pool.execute(
       'SELECT * FROM savedvacations WHERE userID = ? AND vacationID = ?',
       [req.user.id, vacation[0].id]
     );
-    console.log(likedVacations.length);
-    if (likedVacations.length === 0) {
+    console.log('liked vacations', likedVacation.length);
+    if (likedVacation.length === 0) {
       await pool.execute(
         `INSERT INTO savedvacations (userID, vacationID) VALUES (?, ?);`,
         [req.user.id, vacation[0].id]
@@ -175,11 +175,13 @@ router.put('/follow/:id', auth, async (req, res) => {
         status: 'success'
       });
     } else {
-      return res.status(400).json({ msg: 'Vacation already followed by user' });
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'Vacation already followed by user' }] });
     }
   } catch (err) {
     console.error(err.message);
-    res.status(404).json({ msg: 'Post not found' });
+    res.status(404).json({ msg: 'Vacation not found' });
   }
 });
 

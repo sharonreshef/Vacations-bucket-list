@@ -60,7 +60,8 @@ router.post(
       WHERE email=?`,
         [email]
       );
-      if (results < 0) {
+      console.log(results);
+      if (results <= 0) {
         return res
           .status(400)
           .json({ errors: [{ msg: 'Invalid Credentials' }] });
