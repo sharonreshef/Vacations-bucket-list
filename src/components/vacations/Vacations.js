@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
+import differenceBy from 'lodash.differenceby';
 import VacationItem from './VacationItem';
 import {
   getVacations,
@@ -11,12 +12,18 @@ import {
 const Vacations = ({
   getVacations,
   getVacationsfollowedByUser,
-  vacation: { vacations, loading }
+  vacation: { vacations, vacationsFollowedByUser, loading }
 }) => {
   useEffect(() => {
     getVacations();
     getVacationsfollowedByUser();
   }, [getVacations, getVacationsfollowedByUser]);
+
+  const vacationsNotFollowed = differenceBy(
+    vacations,
+    vacationsFollowedByUser,
+    'id'
+  );
 
   return loading ? (
     <Spinner />
@@ -25,7 +32,10 @@ const Vacations = ({
       <h1 className='large text-primary'>Vacations</h1>
       <p className='lead'>View all vacations</p>
       <div className='vacations'>
-        {vacations.map(vacation => (
+        {vacationsFollowedByUser.map(vacation => (
+          <VacationItem key={vacation.id} vacation={vacation} />
+        ))}
+        {vacationsNotFollowed.map(vacation => (
           <VacationItem key={vacation.id} vacation={vacation} />
         ))}
       </div>
