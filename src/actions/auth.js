@@ -19,7 +19,6 @@ export const loadUser = () => async dispatch => {
 
   try {
     const res = await axios.get('http://localhost:5000/auth/');
-    console.log(res);
     dispatch({
       type: USER_LOADED,
       payload: res.data
@@ -49,6 +48,7 @@ export const register = ({
 
   try {
     const res = await axios.post('http://localhost:5000/users/', body, config);
+    console.log(res.data);
 
     dispatch({
       type: REGISTER_SUCCESS,
@@ -81,6 +81,7 @@ export const login = (email, userPassword) => async dispatch => {
 
   try {
     const res = await axios.post('http://localhost:5000/auth/', body, config);
+    console.log(res.data);
 
     dispatch({
       type: LOGIN_SUCCESS,

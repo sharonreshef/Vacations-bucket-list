@@ -3,12 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import VacationItem from './VacationItem';
-import { getVacations } from '../../actions/vacation';
+import {
+  getVacations,
+  getVacationsfollowedByUser
+} from '../../actions/vacation';
 
-const Vacations = ({ getVacations, vacation: { vacations, loading } }) => {
+const Vacations = ({
+  getVacations,
+  getVacationsfollowedByUser,
+  vacation: { vacations, loading }
+}) => {
   useEffect(() => {
     getVacations();
-  }, [getVacations]);
+    getVacationsfollowedByUser();
+  }, [getVacations, getVacationsfollowedByUser]);
 
   return loading ? (
     <Spinner />
@@ -27,7 +35,8 @@ const Vacations = ({ getVacations, vacation: { vacations, loading } }) => {
 
 Vacations.propTypes = {
   getVacations: PropTypes.func.isRequired,
-  vacation: PropTypes.object.isRequired
+  vacation: PropTypes.object.isRequired,
+  getVacationsfollowedByUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -36,5 +45,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getVacations }
+  { getVacations, getVacationsfollowedByUser }
 )(Vacations);
