@@ -3,102 +3,73 @@ import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
 import { addFollow, removeFollow } from '../../actions/vacation';
-// Matirial UI
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import Spinner from '../layout/Spinner';
 
-const useStyles = makeStyles(theme => ({
-  card: {
-    maxWidth: 345
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%' // 16:9
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)'
-  },
-  avatar: {
-    backgroundColor: red[500]
-  }
-}));
+import {
+  MDBBtn,
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBCardTitle,
+  MDBCardText,
+  MDBCol
+} from 'mdbreact';
 
 const VacationItem = ({
-  auth: { isAuthenticated, loading, user },
+  auth: { loading, user },
   vacationsFollowedByUser,
   addFollow,
   removeFollow,
-  vacation: {
-    id,
-    vacationDescription,
-    image,
-    startingDate,
-    endingDate,
-    price,
-    followers
-  }
+  vacation: { id, vacationDescription, image, startingDate, endingDate, price }
 }) => {
   let isFollowed;
   if (vacationsFollowedByUser.find(vacation => vacation.id === id)) {
     isFollowed = true;
   }
-  const classes = useStyles();
+
   console.log(isFollowed);
   return (
-    <Fragment>
-      <Card className={classes.card}>
-        <CardHeader>{vacationDescription}</CardHeader>
-        <CardMedia
-          className={classes.media}
-          image={image}
-          title='Paella dish'
-        />
-        <CardContent>
-          {!loading && user.isAdmin && (
-            <div>
-              <button>Delete</button>
-              <button>Edit</button>
-            </div>
-          )}
-          <Typography variant='body2' color='textSecondary' component='p'>
-            <p>
+    <MDBCol>
+      <MDBCard style={{ width: '20rem' }} className='z-depth-1 mb-4 '>
+        <MDBCardImage className='img-fluid' src={image} />
+        <MDBCardBody>
+          <MDBCardTitle className='h5'>{vacationDescription}</MDBCardTitle>
+          <MDBCardText>
+            {!loading && user.isAdmin && (
+              <div>
+                <MDBBtn className='btn btn-danger btn-rounded'>Delete</MDBBtn>
+                <MDBBtn className='btn btn-light-blue btn-rounded'>Edit</MDBBtn>
+              </div>
+            )}
+            <MDBCardText>
               Starts on: <Moment format='DD/MM/YYYY'>{startingDate}</Moment>
-            </p>
-            <p>
+            </MDBCardText>
+            <MDBCardText>
               Ends on: <Moment format='DD/MM/YYYY'>{endingDate}</Moment>
-            </p>
-            <p>Price: {price}$</p>
+            </MDBCardText>
+            <MDBCardText>
+              <strong>Price: {price}$</strong>
+            </MDBCardText>
+          </MDBCardText>
+          <MDBCardText>
             {!loading && !user.isAdmin && (
-              <button
+              <MDBBtn
+                className={isFollowed ? 'btn btn-light-blue' : 'btn btn-cyan'}
                 onClick={e => {
                   isFollowed ? removeFollow(id) : addFollow(id);
                 }}
               >
-                {isFollowed ? 'Unfollow' : 'Follow'}
-              </button>
+                <i
+                  className={
+                    isFollowed ? 'fas fa-star fa-2x' : 'far fa-star fa-2x'
+                  }
+                />
+                {isFollowed ? '  Unfollow' : '  Follow'}
+              </MDBBtn>
             )}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Fragment>
+          </MDBCardText>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBCol>
   );
 };
 

@@ -1,73 +1,83 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 
+// style
+import {
+  MDBNavbar,
+  MDBNavbarBrand,
+  MDBNavbarNav,
+  MDBNavItem,
+  MDBNavLink
+} from 'mdbreact';
+
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
   const authLinks = (
-    <ul>
-      <li>
-        <Link to='/vacations'>Vacations</Link>
-      </li>
-      <li>
-        <a onClick={logout} href='#!'>
+    <MDBNavbarNav right>
+      <MDBNavItem>
+        <MDBNavLink to='/vacations'>Vacations</MDBNavLink>
+      </MDBNavItem>
+      <MDBNavItem>
+        <MDBNavLink onClick={logout} to='/' href='#!'>
           <i className='fas fa-sign-out-alt' />
           {'  '}
           <span className='hide-sm'>Logout</span>
-        </a>
-      </li>
-    </ul>
+        </MDBNavLink>
+      </MDBNavItem>
+    </MDBNavbarNav>
   );
 
   const adminLinks = (
-    <ul>
-      <li>
-        <Link to='/admin'>Admin</Link>
-      </li>
-      <li>
-        <Link to='/vacations'>Vacations</Link>
-      </li>
-      <li>
-        <a onClick={logout} href='#!'>
+    <MDBNavbarNav right>
+      <MDBNavItem>
+        <MDBNavLink to='/admin'>Admin</MDBNavLink>
+      </MDBNavItem>
+      <MDBNavItem>
+        <MDBNavLink to='/vacations'>Vacations</MDBNavLink>
+      </MDBNavItem>
+      <MDBNavItem>
+        <MDBNavLink onClick={logout} to='/' href='#!'>
           <i className='fas fa-sign-out-alt' />
           {'  '}
           <span className='hide-sm'>Logout</span>
-        </a>
-      </li>
-    </ul>
+        </MDBNavLink>
+      </MDBNavItem>
+    </MDBNavbarNav>
   );
 
   const guestLinks = (
-    <ul>
-      <li>
-        <Link to='/register'>Register</Link>
-      </li>
-      <li>
-        <Link to='/login'>Login</Link>
-      </li>
-    </ul>
+    <MDBNavbarNav right>
+      <MDBNavItem>
+        <MDBNavLink to='/register'>Register</MDBNavLink>
+      </MDBNavItem>
+      <MDBNavItem>
+        <MDBNavLink to='/login'>Login</MDBNavLink>
+      </MDBNavItem>
+    </MDBNavbarNav>
   );
 
   return (
-    <div>
-      <nav className='navbar bg-dark'>
-        <h1>
-          <Link to='/'>
-            <i className='fas fa-globe-americas' /> My Vacations Bucket List
-          </Link>
-        </h1>
-        {!loading && (
-          <Fragment>
-            {isAuthenticated && user.isAdmin
-              ? adminLinks
-              : isAuthenticated
-              ? authLinks
-              : guestLinks}
-          </Fragment>
-        )}
-      </nav>
-    </div>
+    <MDBNavbar color='info-color' expand='md' className='navbar'>
+      <MDBNavbarBrand>
+        <MDBNavLink to='/'>
+          <strong className='white-text h3'>
+            <i className='fas fa-globe-americas' />
+            {'  '}
+            My vacations bucket list
+          </strong>
+        </MDBNavLink>
+      </MDBNavbarBrand>
+      {!loading && (
+        <Fragment>
+          {isAuthenticated && user.isAdmin
+            ? adminLinks
+            : isAuthenticated
+            ? authLinks
+            : guestLinks}
+        </Fragment>
+      )}
+    </MDBNavbar>
   );
 };
 
