@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import Chart from './Chart';
 
 const Dashboard = props => {
-  return <div>Dashboard</div>;
+  return <Chart />;
 };
 
 Dashboard.propTypes = {};

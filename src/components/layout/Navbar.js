@@ -61,11 +61,10 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
     <MDBNavbar color='info-color' expand='md' className='navbar'>
       <MDBNavbarBrand>
         <MDBNavLink to='/'>
-          <strong className='white-text h3'>
-            <i className='fas fa-globe-americas' />
-            {'  '}
-            My vacations bucket list
-          </strong>
+          {' '}
+          <i className='fas fa-globe-americas' />
+          {'  '}
+          <strong className='white-text h3'>My vacations bucket list</strong>
         </MDBNavLink>
       </MDBNavbarBrand>
       {!loading && (

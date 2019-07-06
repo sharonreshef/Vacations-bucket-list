@@ -42,9 +42,7 @@ export const getVacations = () => async dispatch => {
 // Add follow
 export const addFollow = vacationId => async dispatch => {
   try {
-    const res = await axios.put(
-      `http://localhost:5000/vacations/follow/${vacationId}`
-    );
+    await axios.put(`http://localhost:5000/vacations/follow/${vacationId}`);
     dispatch({
       type: UPDATE_FOLLOWERS
     });
@@ -65,9 +63,7 @@ export const addFollow = vacationId => async dispatch => {
 // Remove follow
 export const removeFollow = vacationId => async dispatch => {
   try {
-    const res = await axios.put(
-      `http://localhost:5000/vacations/unfollow/${vacationId}`
-    );
+    await axios.put(`http://localhost:5000/vacations/unfollow/${vacationId}`);
     dispatch({
       type: UPDATE_FOLLOWERS
     });

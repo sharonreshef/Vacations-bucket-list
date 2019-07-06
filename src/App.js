@@ -17,6 +17,7 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import { MDBContainer } from 'mdbreact';
+import Dashboard from './components/dashboard/Dashboard';
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -39,6 +40,7 @@ const App = () => {
               <Route exact path='/register' component={Register} />
               <Route exact path='/login' component={Login} />
               <PrivateRoute exact path='/vacations' component={Vacations} />
+              <PrivateRoute exact path='/admin' component={Dashboard} />
             </Switch>
           </MDBContainer>
         </Fragment>
