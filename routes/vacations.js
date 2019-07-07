@@ -83,25 +83,63 @@ router.post(
 // @desc    Delete a vacation
 // @access  Private
 router.delete('/:id', [auth, admin], async (req, res) => {
+  console.log(`deleting vacation id ${req.params.id}`);
   try {
-    const [results] = await pool.execute(`DELETE FROM vacations WHERE id=?`, [
-      req.params.id
-    ]);
+    const [results] = await pool.execute(
+      `SELECT * FROM savedvacations WHERE vacationId=?`,
+      [req.params.id]
+    );
+
+    if (results.length > 0) {
+      await pool.execute('DELETE FROM savedvacations where VacationId=?', [
+        req.params.id
+      ]);
+      // await pool.execute(`DELETE FROM vacations WHERE id=?`, [
+      //   req.params.id
+      // ]);
+    }
+
+    await pool.execute(`DELETE FROM vacations WHERE id=?`, [req.params.id]);
     res.send({ status: 'success', deletedId: req.params.id });
 
-    // Check user
     if (!results) {
-      return res.status(404).json({ msg: 'vacation not found' });
+      return res.status(404).json({ msg: 'Vacation not found' });
     }
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Post not found' });
+      return res.status(404).json({ msg: 'Vacation not found' });
     }
 
     res.status(500).send('Server Error');
   }
 });
+
+// @route   UPDATE /vacations/:id
+// @desc    edit a vacation
+// @access  Private
+// router.update('/:id', [auth, admin], async (req, res) => {
+//   try {
+//     const [results] = await pool.execute(`UPDATE vacations SET ${} = ${} WHERE id=?`, [
+//       req.params.id
+//     ]);
+//     res.send({ status: 'success', deletedId: req.params.id });
+
+//     // Check user
+//     if (!results) {
+//       return res.status(404).json({ msg: 'vacation not found' });
+//     }
+//   } catch (err) {
+//     console.error(err.message);
+//     if (err.kind === 'ObjectId') {
+//       return res.status(404).json({ msg: 'Post not found' });
+//     }
+
+//     res.status(500).send('Server Error');
+//   }
+// });
+
+// UPDATE `mynextvacation`.`vacations` SET `price` = '4000' WHERE (`id` = '47');
 
 // @route   GET /vacations
 // @desc    Get all vacations
@@ -117,7 +155,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route   GET /vacations/foollowed
+// @route   GET /vacations/followed
 // @desc    Get all vacations followed by user
 // @access  Private
 
