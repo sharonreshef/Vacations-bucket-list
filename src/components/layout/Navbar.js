@@ -67,6 +67,13 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
           <strong className='white-text h3'>My vacations bucket list</strong>
         </MDBNavLink>
       </MDBNavbarBrand>
+      {!loading && isAuthenticated && (
+        <MDBNavbarNav right>
+          <MDBNavItem className='user-name'>
+            Welcome {user.firstName}
+          </MDBNavItem>
+        </MDBNavbarNav>
+      )}
       {!loading && (
         <Fragment>
           {isAuthenticated && user.isAdmin

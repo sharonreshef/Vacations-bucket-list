@@ -4,7 +4,10 @@ import {
   GET_VACATIONS,
   VACATION_ERROR,
   UPDATE_FOLLOWERS,
-  GET_VACATIONSBYUSER
+  GET_VACATIONSBYUSER,
+  DELETE_VACATION,
+  GET_VACATIONDATA,
+  ADD_VACATION
 } from './types';
 
 // Get Vacations followed by user
@@ -29,6 +32,23 @@ export const getVacations = () => async dispatch => {
     const res = await axios.get('http://localhost:5000/vacations/');
     dispatch({
       type: GET_VACATIONS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: VACATION_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
+
+// Get specific vacation data
+export const getVacationData = id => async dispatch => {
+  console.log('trying to get vacation data');
+  try {
+    const res = await axios.get(`http://localhost:5000/vacations/${id}`);
+    dispatch({
+      type: GET_VACATIONDATA,
       payload: res.data
     });
   } catch (err) {
@@ -68,6 +88,61 @@ export const removeFollow = vacationId => async dispatch => {
       type: UPDATE_FOLLOWERS
     });
     dispatch(getVacationsfollowedByUser());
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: VACATION_ERROR
+    });
+  }
+};
+
+// Delete vacation
+export const deleteVacation = vacationId => async dispatch => {
+  try {
+    await axios.delete(`http://localhost:5000/vacations/${vacationId}`);
+    dispatch({
+      type: DELETE_VACATION,
+      payload: vacationId
+    });
+    dispatch(setAlert('Vacation Removed', 'success'));
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: VACATION_ERROR
+    });
+  }
+};
+
+// Add vacation
+export const addVacation = formData => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  try {
+    const res = await axios.post(
+      `http://localhost:5000/vacations/`,
+      formData,
+      config
+    );
+    console.log(res);
+    dispatch({
+      type: ADD_VACATION,
+      payload: res.data
+    });
+    dispatch(getVacations());
+    dispatch(setAlert('Vacation created', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 

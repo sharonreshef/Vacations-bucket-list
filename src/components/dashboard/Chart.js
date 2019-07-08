@@ -10,15 +10,21 @@ const Chart = ({ vacations, getVacations }) => {
     getVacations();
   }, [getVacations]);
 
-  const idArr = vacations.map(({ id }) => id);
-  const numOfFollowers = vacations.map(({ followers }) => followers);
-  const vacationsDescriptionArr = vacations.map(
+  const followedVacationsArr = vacations.reduce(
+    (followedVacationsArr, vacation) => {
+      if (vacation.followers > 0) {
+        followedVacationsArr.push(vacation);
+      }
+      return followedVacationsArr;
+    },
+    []
+  );
+
+  const idArr = followedVacationsArr.map(({ id }) => id);
+  const numOfFollowers = followedVacationsArr.map(({ followers }) => followers);
+  const vacationsDescriptionArr = followedVacationsArr.map(
     ({ vacationDescription }) => vacationDescription
   );
-  console.log(vacations);
-  console.log(idArr);
-  console.log(numOfFollowers);
-  console.log(vacationsDescriptionArr);
 
   const colors = [
     'rgba(255, 99, 132, 0.6)',
@@ -47,17 +53,17 @@ const Chart = ({ vacations, getVacations }) => {
     <div className='chart'>
       <Bar
         data={data}
+        width={100}
+        height={60}
         options={{
-          //   responsive: true,
+          responsive: true,
           scales: {
             yAxes: [
               {
                 ticks: {
                   beginAtZero: true,
-                  max: 5,
                   stepSize: 1,
-                  suggestedMin: 0,
-                  suggestedMax: 30
+                  suggestedMin: 0
                 }
               }
             ]
@@ -66,8 +72,8 @@ const Chart = ({ vacations, getVacations }) => {
             display: true,
             text: 'Number of Followers'
           },
-          tooltips: {
-            callbacks: {}
+          legend: {
+            display: false
           }
         }}
       />

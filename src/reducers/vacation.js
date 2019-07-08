@@ -2,7 +2,10 @@ import {
   GET_VACATIONS,
   VACATION_ERROR,
   UPDATE_FOLLOWERS,
-  GET_VACATIONSBYUSER
+  GET_VACATIONSBYUSER,
+  DELETE_VACATION,
+  GET_VACATIONDATA,
+  ADD_VACATION
 } from '../actions/types';
 
 const initialState = {
@@ -26,6 +29,24 @@ export default function(state = initialState, action) {
       return {
         ...state,
         vacations: payload,
+        loading: false
+      };
+    case ADD_VACATION:
+      return {
+        ...state,
+        vacations: [...state.vacations, payload],
+        loading: false
+      };
+    case GET_VACATIONDATA:
+      return {
+        ...state,
+        vacation: payload,
+        loading: false
+      };
+    case DELETE_VACATION:
+      return {
+        ...state,
+        vacations: state.vacations.filter(vacation => vacation.id !== payload),
         loading: false
       };
     case VACATION_ERROR:

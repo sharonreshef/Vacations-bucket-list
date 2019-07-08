@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
-import { addFollow, removeFollow } from '../../actions/vacation';
+import {
+  addFollow,
+  removeFollow,
+  deleteVacation
+} from '../../actions/vacation';
 
 import {
   MDBBtn,
@@ -11,14 +15,18 @@ import {
   MDBCardImage,
   MDBCardTitle,
   MDBCardText,
-  MDBCol
+  MDBCol,
+  MDBRow
 } from 'mdbreact';
+
+import EditModal from './EditModal';
 
 const VacationItem = ({
   auth: { loading, user },
   vacationsFollowedByUser,
   addFollow,
   removeFollow,
+  deleteVacation,
   vacation: { id, vacationDescription, image, startingDate, endingDate, price }
 }) => {
   let isFollowed;
@@ -27,6 +35,7 @@ const VacationItem = ({
   }
 
   console.log(isFollowed);
+  console.log(id);
   return (
     <MDBCol>
       <MDBCard style={{ width: '20rem' }} className='z-depth-1 mb-4 '>
@@ -35,10 +44,22 @@ const VacationItem = ({
           <MDBCardTitle className='h5'>{vacationDescription}</MDBCardTitle>
           <MDBCardText>
             {!loading && user.isAdmin && (
-              <div>
-                <MDBBtn className='btn btn-danger btn-rounded'>Delete</MDBBtn>
-                <MDBBtn className='btn btn-light-blue btn-rounded'>Edit</MDBBtn>
-              </div>
+              <MDBRow>
+                <MDBCol size={6}>
+                  <MDBBtn
+                    className='btn btn-danger'
+                    color='danger'
+                    onClick={e => {
+                      deleteVacation(id);
+                    }}
+                  >
+                    Delete
+                  </MDBBtn>
+                </MDBCol>
+                <MDBCol size={6}>
+                  <EditModal vacationId={id} />
+                </MDBCol>
+              </MDBRow>
             )}
             <MDBCardText>
               Starts on: <Moment format='DD/MM/YYYY'>{startingDate}</Moment>
@@ -78,6 +99,7 @@ VacationItem.propTypes = {
   auth: PropTypes.object.isRequired,
   addFollow: PropTypes.func.isRequired,
   removeFollow: PropTypes.func.isRequired,
+  deleteVacation: PropTypes.func.isRequired,
   vacationsFollowedByUser: PropTypes.array.isRequired
 };
 
@@ -88,5 +110,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { addFollow, removeFollow }
+  { addFollow, removeFollow, deleteVacation }
 )(VacationItem);

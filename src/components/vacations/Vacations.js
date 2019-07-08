@@ -8,11 +8,13 @@ import {
   getVacations,
   getVacationsfollowedByUser
 } from '../../actions/vacation';
+import NewVacation from './NewVacation';
 
 import { MDBRow } from 'mdbreact';
 
 const Vacations = ({
-  isAuthenticated,
+  auth: { isAuthenticated, user },
+
   getVacations,
   getVacationsfollowedByUser,
   vacation: { vacations, vacationsFollowedByUser, loading }
@@ -28,7 +30,7 @@ const Vacations = ({
     'id'
   );
 
-  return !isAuthenticated ? (
+  return !isAuthenticated && loading ? (
     <Spinner />
   ) : (
     <Fragment>
@@ -42,7 +44,14 @@ const Vacations = ({
           Follow your desierd bucketlist vacations and stay up to date for price
           and dates changes.
         </p>
+      </MDBRow>
+      {isAuthenticated && user.isAdmin && (
+        <MDBRow>
+          <NewVacation />
+        </MDBRow>
+      )}
 
+      <MDBRow>
         {vacationsFollowedByUser.map(vacation => (
           <VacationItem key={vacation.id} vacation={vacation} />
         ))}
@@ -62,7 +71,9 @@ Vacations.propTypes = {
 
 const mapStateToProps = state => ({
   vacation: state.vacation,
-  isAuthenticated: state.auth.isAuthenticated
+  auth: state.auth
+  // isAuthenticated: state.auth.isAuthenticated,
+  // user: state.auth.user
 });
 
 export default connect(
