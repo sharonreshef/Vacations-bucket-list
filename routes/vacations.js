@@ -23,61 +23,35 @@ let pool;
 // @route   POST /vacations
 // @desc    Create a vacation
 // @access  Private
-router.post(
-  '/',
-  [
-    auth,
-    admin,
-    [
-      check('vacationDescription', 'Description is required')
-        .not()
-        .isEmpty(),
-      check('startingDate', 'Starting date is required')
-        .not()
-        .isEmpty(),
-      check('endingDate', 'Ending date is required')
-        .not()
-        .isEmpty(),
-      check('price', 'Price is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.post('/', [auth, admin], async (req, res) => {
+  const {
+    vacationDescription,
+    image,
+    startingDate,
+    endingDate,
+    price
+  } = req.body.formData;
 
-    const {
+  try {
+    console.log(req.body);
+
+    await pool.execute(
+      `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
+      [vacationDescription, image, startingDate, endingDate, price]
+    );
+    const vacation = {
       vacationDescription,
       image,
       startingDate,
       endingDate,
       price
-    } = req.body;
-
-    try {
-      await pool.execute(
-        `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
-        [vacationDescription, image, startingDate, endingDate, price]
-      );
-      res.send({
-        status: 'success',
-        vacation: {
-          vacationDescription,
-          image,
-          startingDate,
-          endingDate,
-          price
-        }
-      });
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
+    };
+    res.json(vacation);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
-);
+});
 
 // @route   DELETE /vacations/:id
 // @desc    Delete a vacation
@@ -94,9 +68,6 @@ router.delete('/:id', [auth, admin], async (req, res) => {
       await pool.execute('DELETE FROM savedvacations where VacationId=?', [
         req.params.id
       ]);
-      // await pool.execute(`DELETE FROM vacations WHERE id=?`, [
-      //   req.params.id
-      // ]);
     }
 
     await pool.execute(`DELETE FROM vacations WHERE id=?`, [req.params.id]);
@@ -149,6 +120,24 @@ router.get('/', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(`SELECT * FROM vacations`);
     res.json(vacations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET /vacations/:id
+// @desc    Get specific vacation data
+// @access  Private
+
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const [vacation, fields] = await pool.execute(
+      `SELECT * FROM vacations WHERE id=?`,
+      [req.params.id]
+    );
+    res.json(vacation);
+    console.log(vacation);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
