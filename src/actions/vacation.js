@@ -7,13 +7,15 @@ import {
   GET_VACATIONSBYUSER,
   DELETE_VACATION,
   GET_VACATIONDATA,
-  ADD_VACATION
+  ADD_VACATION,
+  EDIT_VACATION
 } from './types';
 
 // Get Vacations followed by user
 export const getVacationsfollowedByUser = () => async dispatch => {
   try {
     const res = await axios.get('http://localhost:5000/vacations/followed');
+    console.log(res.data);
     dispatch({
       type: GET_VACATIONSBYUSER,
       payload: res.data
@@ -61,8 +63,11 @@ export const getVacationData = id => async dispatch => {
 
 // Add follow
 export const addFollow = vacationId => async dispatch => {
+  console.log('adding');
   try {
-    await axios.put(`http://localhost:5000/vacations/follow/${vacationId}`);
+    const res = await axios.put(
+      `http://localhost:5000/vacations/follow/${vacationId}`
+    );
     dispatch({
       type: UPDATE_FOLLOWERS
     });
@@ -83,7 +88,9 @@ export const addFollow = vacationId => async dispatch => {
 // Remove follow
 export const removeFollow = vacationId => async dispatch => {
   try {
-    await axios.put(`http://localhost:5000/vacations/unfollow/${vacationId}`);
+    const res = await axios.put(
+      `http://localhost:5000/vacations/unfollow/${vacationId}`
+    );
     dispatch({
       type: UPDATE_FOLLOWERS
     });
@@ -143,6 +150,61 @@ export const addVacation = formData => async dispatch => {
     });
     dispatch(getVacations());
     dispatch(setAlert('Vacation created', 'success'));
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: VACATION_ERROR
+    });
+  }
+};
+
+// Edit vacation
+export const editVacation = (
+  vacationId,
+  formData,
+  vacation
+) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  if (formData.vacationDescription === '') {
+    formData.vacationDescription = vacation[0].vacationDescription;
+  }
+  if (formData.image === '') {
+    formData.image = vacation[0].image;
+  }
+  if (formData.startingDate === '') {
+    formData.startingDate = vacation[0].startingDate;
+  }
+  if (formData.endingDate === '') {
+    formData.endingDate = vacation[0].endingDate;
+  }
+  if (formData.price === '') {
+    formData.price = vacation[0].price;
+  }
+
+  console.log(vacationId, formData, vacation);
+  try {
+    const res = await axios.put(
+      `http://localhost:5000/vacations/${vacationId}`,
+      formData,
+      config
+    );
+    console.log(res);
+    dispatch({
+      type: EDIT_VACATION,
+      payload: res.data
+    });
+    dispatch(getVacations());
+    dispatch(setAlert('VACATION EDITED', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
 

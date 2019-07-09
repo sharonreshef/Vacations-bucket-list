@@ -20,7 +20,6 @@ const Chart = ({ vacations, getVacations }) => {
     []
   );
 
-  const idArr = followedVacationsArr.map(({ id }) => id);
   const numOfFollowers = followedVacationsArr.map(({ followers }) => followers);
   const vacationsDescriptionArr = followedVacationsArr.map(
     ({ vacationDescription }) => vacationDescription

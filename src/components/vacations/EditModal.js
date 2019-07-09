@@ -11,9 +11,16 @@ import {
   MDBModalFooter,
   MDBInput
 } from 'mdbreact';
-import { getVacationData } from '../../actions/vacation';
+import { getVacationData, editVacation } from '../../actions/vacation';
 
-const EditModal = ({ vacationId, vacation, getVacationData }) => {
+const EditModal = ({
+  vacationId,
+  vacation,
+  getVacationData,
+  editVacation,
+  loading
+}) => {
+  console.log(vacation);
   const [formData, setFormData] = useState({
     vacationDescription: '',
     image: '',
@@ -31,7 +38,17 @@ const EditModal = ({ vacationId, vacation, getVacationData }) => {
     price
   } = formData;
 
-  console.log(vacationId);
+  const onChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = e => {
+    e.preventDefault();
+
+    console.log(formData);
+    console.log(vacationId, formData);
+    editVacation(vacationId, formData, vacation);
+    toggleModal(!displayModal);
+  };
 
   return (
     <div>
@@ -45,61 +62,81 @@ const EditModal = ({ vacationId, vacation, getVacationData }) => {
         Edit
       </MDBBtn>
 
-      {displayModal && (
+      {displayModal && vacation != null && (
         <Fragment>
           <MDBModal isOpen={true} size='lg' centered>
             <MDBModalHeader toggle={() => toggleModal(!displayModal)}>
               Edit Vacation
             </MDBModalHeader>
-            <MDBModalBody>
-              <div className='form-group'>
-                <MDBRow>
-                  <MDBCol>
-                    {' '}
-                    <MDBInput
-                      label='Vacation description'
-                      value={vacation[0].vacationDescription}
-                    />
-                  </MDBCol>
-                </MDBRow>
-                <MDBRow>
-                  <MDBCol>
-                    <MDBInput label='Image link' value={vacation[0].image} />
-                  </MDBCol>
-                </MDBRow>
-                <MDBRow>
-                  <MDBCol size={6}>
-                    <MDBInput
-                      type='date'
-                      label='Start date'
-                      value={vacation[0].startingDate}
-                    />
-                  </MDBCol>
-                  <MDBCol size={6}>
-                    <MDBInput
-                      type='date'
-                      label='End date'
-                      value={vacation[0].endingDate}
-                    />
-                  </MDBCol>
-                </MDBRow>
-                <MDBRow>
-                  <MDBCol>
-                    {' '}
-                    <MDBInput label='Price' value={vacation[0].price} />
-                  </MDBCol>
-                </MDBRow>
-              </div>
-            </MDBModalBody>
-            <MDBModalFooter>
-              <MDBBtn
-                color='secondary'
-                onClick={() => toggleModal(!displayModal)}
-              >
-                Close
-              </MDBBtn>
-              <MDBBtn color='primary'>Save changes</MDBBtn>
-            </MDBModalFooter>
+            <form onSubmit={e => onSubmit(e)}>
+              <MDBModalBody>
+                <div className='form-group'>
+                  <MDBRow>
+                    <MDBCol>
+                      {' '}
+                      <MDBInput
+                        name='vacationDescription'
+                        label='Vacation description'
+                        onChange={e => onChange(e)}
+                        valueDefault={vacation[0].vacationDescription}
+                      />
+                    </MDBCol>
+                  </MDBRow>
+                  <MDBRow>
+                    <MDBCol>
+                      <MDBInput
+                        name='image'
+                        label='Image link'
+                        onChange={e => onChange(e)}
+                        valueDefault={vacation[0].image}
+                      />
+                    </MDBCol>
+                  </MDBRow>
+                  <MDBRow>
+                    <MDBCol size={6}>
+                      <MDBInput
+                        type='date'
+                        name='startingDate'
+                        label='Start date'
+                        onChange={e => onChange(e)}
+                        valueDefault={vacation[0].startingDate}
+                      />
+                    </MDBCol>
+                    <MDBCol size={6}>
+                      <MDBInput
+                        type='date'
+                        name='endingDate'
+                        label='End date'
+                        onChange={e => onChange(e)}
+                        valueDefault={vacation[0].endingDate}
+                      />
+                    </MDBCol>
+                  </MDBRow>
+                  <MDBRow>
+                    <MDBCol>
+                      {' '}
+                      <MDBInput
+                        name='price'
+                        label='Price'
+                        onChange={e => onChange(e)}
+                        valueDefault={vacation[0].price}
+                      />
+                    </MDBCol>
+                  </MDBRow>
+                </div>
+              </MDBModalBody>
+              <MDBModalFooter>
+                <MDBBtn
+                  color='secondary'
+                  onClick={() => toggleModal(!displayModal)}
+                >
+                  Close
+                </MDBBtn>
+                <MDBBtn color='primary' type='submit'>
+                  Save changes
+                </MDBBtn>
+              </MDBModalFooter>
+            </form>
           </MDBModal>
         </Fragment>
       )}
@@ -109,14 +146,17 @@ const EditModal = ({ vacationId, vacation, getVacationData }) => {
 
 EditModal.propTypes = {
   getVacationData: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
+  vacation: PropTypes.object.isRequired,
+  editVacation: PropTypes.func.isRequired,
+  loading: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
-  vacation: state.vacation.vacation
+  vacation: state.vacation.vacation,
+  loading: state.vacation.loading
 });
 
 export default connect(
   mapStateToProps,
-  { getVacationData }
+  { getVacationData, editVacation }
 )(EditModal);

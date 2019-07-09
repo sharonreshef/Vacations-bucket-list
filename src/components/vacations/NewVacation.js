@@ -76,6 +76,7 @@ const NewVacation = ({ addVacation }) => {
                         name='vacationDescription'
                         valueDefault={vacationDescription}
                         onChange={e => onChange(e)}
+                        required
                       />
                     </MDBCol>
                   </MDBRow>
@@ -97,6 +98,7 @@ const NewVacation = ({ addVacation }) => {
                         name='startingDate'
                         valueDefault={startingDate}
                         onChange={e => onChange(e)}
+                        required
                       />
                     </MDBCol>
                     <MDBCol size={6}>
@@ -106,6 +108,7 @@ const NewVacation = ({ addVacation }) => {
                         name='endingDate'
                         valueDefault={endingDate}
                         onChange={e => onChange(e)}
+                        required
                       />
                     </MDBCol>
                   </MDBRow>
@@ -117,6 +120,7 @@ const NewVacation = ({ addVacation }) => {
                         name='price'
                         valueDefault={price}
                         onChange={e => onChange(e)}
+                        required
                       />
                     </MDBCol>
                   </MDBRow>
@@ -144,10 +148,6 @@ const NewVacation = ({ addVacation }) => {
 NewVacation.propTypes = {
   addVacation: PropTypes.func.isRequired
 };
-
-const mapStateToProps = state => ({
-  vacation: state.vacation.vacation
-});
 
 export default connect(
   null,

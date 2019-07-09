@@ -5,7 +5,8 @@ import {
   GET_VACATIONSBYUSER,
   DELETE_VACATION,
   GET_VACATIONDATA,
-  ADD_VACATION
+  ADD_VACATION,
+  EDIT_VACATION
 } from '../actions/types';
 
 const initialState = {
@@ -36,6 +37,10 @@ export default function(state = initialState, action) {
         ...state,
         vacations: [...state.vacations, payload],
         loading: false
+      };
+    case EDIT_VACATION:
+      return {
+        ...state
       };
     case GET_VACATIONDATA:
       return {

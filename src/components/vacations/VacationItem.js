@@ -34,7 +34,6 @@ const VacationItem = ({
     isFollowed = true;
   }
 
-  console.log(isFollowed);
   console.log(id);
   return (
     <MDBCol>

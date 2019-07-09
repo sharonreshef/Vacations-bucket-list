@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
-import differenceBy from 'lodash.differenceby';
+import differenceBy from 'lodash/differenceBy';
 import VacationItem from './VacationItem';
 import {
   getVacations,
@@ -29,6 +29,9 @@ const Vacations = ({
     vacationsFollowedByUser,
     'id'
   );
+
+  console.log(vacationsNotFollowed);
+  console.log(vacationsFollowedByUser);
 
   return !isAuthenticated && loading ? (
     <Spinner />
