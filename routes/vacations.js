@@ -23,35 +23,60 @@ let pool;
 // @route   POST /vacations
 // @desc    Create a vacation
 // @access  Private
-router.post('/', [auth, admin], async (req, res) => {
-  const {
-    vacationDescription,
-    image,
-    startingDate,
-    endingDate,
-    price
-  } = req.body.formData;
-
-  try {
-    console.log(req.body);
-
-    await pool.execute(
-      `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
-      [vacationDescription, image, startingDate, endingDate, price]
-    );
-    const vacation = {
+router.post(
+  '/',
+  [
+    auth,
+    admin
+    // [
+    //   check('vacationDescription', 'Description is required')
+    //     .not()
+    //     .isEmpty(),
+    //   check('startingDate', ' date is required')
+    //     .not()
+    //     .isEmpty(),
+    //   check('endingDate', ' date is required')
+    //     .not()
+    //     .isEmpty(),
+    //   check('Price', 'Price is required')
+    //     .not()
+    //     .isEmpty()
+    // ]
+  ],
+  async (req, res) => {
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({ errors: errors.array() });
+    // }
+    const {
       vacationDescription,
       image,
       startingDate,
       endingDate,
       price
-    };
-    res.json(vacation);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    } = req.body.formData;
+
+    try {
+      console.log(req.body);
+
+      await pool.execute(
+        `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
+        [vacationDescription, image, startingDate, endingDate, price]
+      );
+      const vacation = {
+        vacationDescription,
+        image,
+        startingDate,
+        endingDate,
+        price
+      };
+      res.json(vacation);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
   }
-});
+);
 
 // @route   DELETE /vacations/:id
 // @desc    Delete a vacation
@@ -89,28 +114,62 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 // @route   UPDATE /vacations/:id
 // @desc    edit a vacation
 // @access  Private
-// router.update('/:id', [auth, admin], async (req, res) => {
-//   try {
-//     const [results] = await pool.execute(`UPDATE vacations SET ${} = ${} WHERE id=?`, [
-//       req.params.id
-//     ]);
-//     res.send({ status: 'success', deletedId: req.params.id });
+router.put('/:id', [auth, admin], async (req, res) => {
+  try {
+    const [existingVacation] = await pool.execute(
+      `SELECT * from vacations
+      WHERE id=?`,
+      [req.params.id]
+    );
+    const changes = req.body;
 
-//     // Check user
-//     if (!results) {
-//       return res.status(404).json({ msg: 'vacation not found' });
-//     }
-//   } catch (err) {
-//     console.error(err.message);
-//     if (err.kind === 'ObjectId') {
-//       return res.status(404).json({ msg: 'Post not found' });
-//     }
+    console.log('existing:', existingVacation[0]);
+    console.log('changes:', changes);
+    console.log('assining object');
+    const returnedTarget = Object.assign(existingVacation[0], changes);
+    console.log('returned target:', returnedTarget);
+    console.log(
+      returnedTarget.vacationDescription,
+      returnedTarget.image,
+      returnedTarget.startingDate,
+      returnedTarget.endingDate,
+      returnedTarget.price
+    );
 
-//     res.status(500).send('Server Error');
-//   }
-// });
+    if (!existingVacation) {
+      res.status(400);
+      res.send(`vacation ${id} doesn\'t exist!`);
+      return;
+    }
 
-// UPDATE `mynextvacation`.`vacations` SET `price` = '4000' WHERE (`id` = '47');
+    const [results] = await pool.execute(
+      `UPDATE vacations SET
+      vacationDescription = ?,
+      image = ?,
+      startingDate = ?,
+      endingDate = ?,
+      price = ?
+      WHERE id=?`,
+      [
+        returnedTarget.vacationDescription,
+        returnedTarget.image,
+        returnedTarget.startingDate,
+        returnedTarget.endingDate,
+        returnedTarget.price,
+        req.params.id
+      ]
+    );
+
+    res.send(returnedTarget);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+
+    res.status(500).send('Server Error');
+  }
+});
 
 // @route   GET /vacations
 // @desc    Get all vacations
@@ -119,6 +178,22 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(`SELECT * FROM vacations`);
+    res.json(vacations);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.get('/followed', auth, async (req, res) => {
+  console.log('try');
+  try {
+    const [vacations, fields] = await pool.execute(
+      `SELECT vacations.* from vacations
+    INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
+    WHERE savedvacations.userID = ?`,
+      [req.user.id]
+    );
     res.json(vacations);
   } catch (err) {
     console.error(err.message);
@@ -148,20 +223,22 @@ router.get('/:id', auth, async (req, res) => {
 // @desc    Get all vacations followed by user
 // @access  Private
 
-router.get('/followed', auth, async (req, res) => {
-  try {
-    const [vacations, fields] = await pool.execute(
-      `SELECT vacations.* from vacations
-    INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
-    WHERE savedvacations.userID = ?`,
-      [req.user.id]
-    );
-    res.json(vacations);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
+// router.get('/followed', auth, async (req, res) => {
+//   console.log('followed');
+//   try {
+//     const [vacations, fields] = await pool.execute(
+//       `SELECT * from vacations
+//     INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
+//     WHERE savedvacations.userID = ?`,
+//       [req.user.id]
+//     );
+//     res.json(vacations);
+//     console.log(vacations);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 // @route   PUT /vacations/follow/:id
 // @desc    Follow a vacation
