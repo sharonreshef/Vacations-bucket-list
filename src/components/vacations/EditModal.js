@@ -41,6 +41,9 @@ const EditModal = ({
       alert('End date should be greater than Start date');
       console.log('wrong dates');
       return;
+    } else if (isNaN(formData.price)) {
+      alert('price should be in numbers');
+      return;
     } else {
       console.log(formData);
       console.log(vacationId, formData);

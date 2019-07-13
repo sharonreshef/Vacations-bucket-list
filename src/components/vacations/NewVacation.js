@@ -41,6 +41,9 @@ const NewVacation = ({ addVacation }) => {
       alert('End date should be greater than Start date');
       console.log('wrong dates');
       return;
+    } else if (isNaN(price)) {
+      alert('price should be in numbers');
+      return;
     } else {
       toggleModal(!displayModal);
       console.log(formData);
