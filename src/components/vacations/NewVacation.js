@@ -34,6 +34,27 @@ const NewVacation = ({ addVacation }) => {
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const onSubmit = e => {
+    e.preventDefault();
+
+    if (Date.parse(formData.endingDate) <= Date.parse(formData.startingDate)) {
+      alert('End date should be greater than Start date');
+      console.log('wrong dates');
+      return;
+    } else {
+      toggleModal(!displayModal);
+      console.log(formData);
+      addVacation({ formData });
+      setFormData({
+        vacationDescription: '',
+        image: '',
+        startingDate: '',
+        endingDate: '',
+        price: ''
+      });
+    }
+  };
+
   return (
     <div>
       <MDBBtn
@@ -53,17 +74,7 @@ const NewVacation = ({ addVacation }) => {
             </MDBModalHeader>
             <form
               onSubmit={e => {
-                e.preventDefault();
-                toggleModal(!displayModal);
-                console.log(formData);
-                addVacation({ formData });
-                setFormData({
-                  vacationDescription: '',
-                  image: '',
-                  startingDate: '',
-                  endingDate: '',
-                  price: ''
-                });
+                onSubmit(e);
               }}
             >
               <MDBModalBody>

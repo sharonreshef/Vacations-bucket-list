@@ -37,10 +37,16 @@ const EditModal = ({
   const onSubmit = e => {
     e.preventDefault();
 
-    console.log(formData);
-    console.log(vacationId, formData);
-    editVacation(vacationId, formData, vacation);
-    toggleModal(!displayModal);
+    if (Date.parse(formData.endingDate) <= Date.parse(formData.startingDate)) {
+      alert('End date should be greater than Start date');
+      console.log('wrong dates');
+      return;
+    } else {
+      console.log(formData);
+      console.log(vacationId, formData);
+      editVacation(vacationId, formData, vacation);
+      toggleModal(!displayModal);
+    }
   };
 
   return (
