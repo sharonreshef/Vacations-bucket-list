@@ -30,13 +30,6 @@ const EditModal = ({
   });
 
   const [displayModal, toggleModal] = useState(false);
-  const {
-    vacationDescription,
-    image,
-    startingDate,
-    endingDate,
-    price
-  } = formData;
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });

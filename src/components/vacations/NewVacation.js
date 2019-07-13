@@ -134,7 +134,7 @@ const NewVacation = ({ addVacation }) => {
                   Close
                 </MDBBtn>
                 <MDBBtn color='primary' type='submit'>
-                  Save changes
+                  Add vacation
                 </MDBBtn>
               </MDBModalFooter>
             </form>

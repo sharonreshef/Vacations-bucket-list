@@ -20,6 +20,7 @@ import {
 } from 'mdbreact';
 
 import EditModal from './EditModal';
+import DeleteModal from './DeleteModal';
 
 const VacationItem = ({
   auth: { loading, user },
@@ -42,24 +43,6 @@ const VacationItem = ({
         <MDBCardBody>
           <MDBCardTitle className='h5'>{vacationDescription}</MDBCardTitle>
           <MDBCardText>
-            {!loading && user.isAdmin && (
-              <MDBRow>
-                <MDBCol size={6}>
-                  <MDBBtn
-                    className='btn btn-danger'
-                    color='danger'
-                    onClick={e => {
-                      deleteVacation(id);
-                    }}
-                  >
-                    Delete
-                  </MDBBtn>
-                </MDBCol>
-                <MDBCol size={6}>
-                  <EditModal vacationId={id} />
-                </MDBCol>
-              </MDBRow>
-            )}
             <MDBCardText>
               Starts on: <Moment format='DD/MM/YYYY'>{startingDate}</Moment>
             </MDBCardText>
@@ -71,6 +54,25 @@ const VacationItem = ({
             </MDBCardText>
           </MDBCardText>
           <MDBCardText>
+            {!loading && user.isAdmin && (
+              <MDBRow>
+                <MDBCol size={6}>
+                  <DeleteModal vacationId={id} />
+                  {/* <MDBBtn
+                    className='btn btn-danger'
+                    color='danger'
+                    onClick={e => {
+                      deleteVacation(id);
+                    }}
+                  >
+                    Delete
+                  </MDBBtn> */}
+                </MDBCol>
+                <MDBCol size={6}>
+                  <EditModal vacationId={id} />
+                </MDBCol>
+              </MDBRow>
+            )}
             {!loading && !user.isAdmin && (
               <MDBBtn
                 className={isFollowed ? 'btn btn-light-blue' : 'btn btn-cyan'}
