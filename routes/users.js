@@ -20,7 +20,6 @@ let pool;
 })();
 
 router.get('/', async (req, res) => {
-  console.log('test', req.test);
   const [results, fields] = await pool.execute(`SELECT * FROM users`);
 
   res.send(results);
@@ -61,14 +60,11 @@ router.post(
     };
 
     try {
-      console.log(firstName, lastName, email, userPassword);
       const [results, fields] = await pool.execute(
         `SELECT * FROM users
       WHERE email=?`,
         [email]
       );
-
-      console.log(results);
 
       if (results.length > 0) {
         return res
@@ -79,7 +75,6 @@ router.post(
       const salt = await bycrypt.genSalt(10);
 
       hashPassword = await bycrypt.hash(userPassword, salt);
-      console.log(hashPassword);
 
       await pool.execute(
         `INSERT INTO users (firstName, lastName, email, userPassword) VALUES (?, ?, ?, ?);`,

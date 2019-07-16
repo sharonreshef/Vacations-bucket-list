@@ -60,7 +60,6 @@ router.post(
       WHERE email=?`,
         [email]
       );
-      console.log(results);
       if (results <= 0) {
         return res
           .status(400)
@@ -86,7 +85,7 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 3600000 },
+        { expiresIn: 36000 },
         (err, token) => {
           if (err) throw err;
           res.json({ token });

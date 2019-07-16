@@ -23,66 +23,39 @@ let pool;
 // @route   POST /vacations
 // @desc    Create a vacation
 // @access  Private
-router.post(
-  '/',
-  [
-    auth,
-    admin
-    // [
-    //   check('vacationDescription', 'Description is required')
-    //     .not()
-    //     .isEmpty(),
-    //   check('startingDate', ' date is required')
-    //     .not()
-    //     .isEmpty(),
-    //   check('endingDate', ' date is required')
-    //     .not()
-    //     .isEmpty(),
-    //   check('Price', 'Price is required')
-    //     .not()
-    //     .isEmpty()
-    // ]
-  ],
-  async (req, res) => {
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //   return res.status(400).json({ errors: errors.array() });
-    // }
-    const {
+router.post('/', [auth, admin], async (req, res) => {
+  const {
+    vacationDescription,
+    image,
+    startingDate,
+    endingDate,
+    price
+  } = req.body.formData;
+
+  try {
+    await pool.execute(
+      `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
+      [vacationDescription, image, startingDate, endingDate, price]
+    );
+    const vacation = {
       vacationDescription,
       image,
       startingDate,
       endingDate,
       price
-    } = req.body.formData;
-
-    try {
-      console.log(req.body);
-
-      await pool.execute(
-        `INSERT INTO vacations (vacationDescription, image, startingDate, endingDate, price) VALUES (?, ?, ?, ?, ?);`,
-        [vacationDescription, image, startingDate, endingDate, price]
-      );
-      const vacation = {
-        vacationDescription,
-        image,
-        startingDate,
-        endingDate,
-        price
-      };
-      res.json(vacation);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
+    };
+    res.json(vacation);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
-);
+});
 
 // @route   DELETE /vacations/:id
 // @desc    Delete a vacation
 // @access  Private
 router.delete('/:id', [auth, admin], async (req, res) => {
-  console.log(`deleting vacation id ${req.params.id}`);
+
   try {
     const [results] = await pool.execute(
       `SELECT * FROM savedvacations WHERE vacationId=?`,
@@ -123,18 +96,7 @@ router.put('/:id', [auth, admin], async (req, res) => {
     );
     const changes = req.body;
 
-    console.log('existing:', existingVacation[0]);
-    console.log('changes:', changes);
-    console.log('assining object');
     const returnedTarget = Object.assign(existingVacation[0], changes);
-    console.log('returned target:', returnedTarget);
-    console.log(
-      returnedTarget.vacationDescription,
-      returnedTarget.image,
-      returnedTarget.startingDate,
-      returnedTarget.endingDate,
-      returnedTarget.price
-    );
 
     if (!existingVacation) {
       res.status(400);
@@ -186,7 +148,6 @@ router.get('/', auth, async (req, res) => {
 });
 
 router.get('/followed', auth, async (req, res) => {
-  console.log('try');
   try {
     const [vacations, fields] = await pool.execute(
       `SELECT vacations.* from vacations
@@ -212,7 +173,6 @@ router.get('/:id', auth, async (req, res) => {
       [req.params.id]
     );
     res.json(vacation);
-    console.log(vacation);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -254,7 +214,6 @@ router.put('/follow/:id', auth, async (req, res) => {
       'SELECT * FROM savedvacations WHERE userID = ? AND vacationID = ?',
       [req.user.id, vacation[0].id]
     );
-    console.log('liked vacations', likedVacation.length);
     if (likedVacation.length === 0) {
       await pool.execute(
         `INSERT INTO savedvacations (userID, vacationID) VALUES (?, ?);`,
@@ -266,13 +225,11 @@ router.put('/follow/:id', auth, async (req, res) => {
           1,
           req.params.id
         ]);
-        console.log('1 follower added');
       } else {
         await pool.execute(`UPDATE vacations SET followers=? WHERE id=?`, [
           vacation[0].followers + 1,
           req.params.id
         ]);
-        console.log(`${vacation[0].followers + 1} added`);
       }
 
       res.send({
@@ -298,7 +255,6 @@ router.put('/unfollow/:id', auth, async (req, res) => {
       [req.params.id, req.user.id]
     );
 
-    console.log(likedVacations.affectedRows);
     if (likedVacations.affectedRows > 0) {
       const [vacation] = await pool.execute(
         `SELECT * FROM vacations WHERE id=?`,
@@ -309,7 +265,6 @@ router.put('/unfollow/:id', auth, async (req, res) => {
         vacation[0].followers - 1,
         req.params.id
       ]);
-      console.log(`${vacation[0].followers - 1} followers`);
     }
   } catch (err) {
     console.error(err.message);
