@@ -30,7 +30,7 @@ export const loadUser = () => async dispatch => {
   }
 };
 
-/// REGISTER USER
+/// Register User
 
 export const register = ({
   firstName,
@@ -48,7 +48,6 @@ export const register = ({
 
   try {
     const res = await axios.post('http://localhost:5000/users/', body, config);
-    console.log(res.data);
 
     dispatch({
       type: REGISTER_SUCCESS,
@@ -81,7 +80,6 @@ export const login = (email, userPassword) => async dispatch => {
 
   try {
     const res = await axios.post('http://localhost:5000/auth/', body, config);
-    console.log(res.data);
 
     dispatch({
       type: LOGIN_SUCCESS,

@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   MDBBtn,
-  MDBCol,
-  MDBRow,
   MDBModal,
   MDBModalBody,
   MDBModalHeader,
-  MDBModalFooter,
-  MDBInput
+  MDBModalFooter
 } from 'mdbreact';
 import { deleteVacation } from '../../actions/vacation';
 
@@ -49,6 +46,7 @@ const DeleteModal = ({ vacationId, deleteVacation }) => {
                 type='submit'
                 onClick={e => {
                   deleteVacation(vacationId);
+                  toggleModal(!displayModal);
                 }}
               >
                 Delete

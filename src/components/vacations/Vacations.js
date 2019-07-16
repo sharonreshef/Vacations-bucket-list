@@ -30,9 +30,6 @@ const Vacations = ({
     'id'
   );
 
-  console.log(vacationsNotFollowed);
-  console.log(vacationsFollowedByUser);
-
   return !isAuthenticated && loading ? (
     <Spinner />
   ) : (

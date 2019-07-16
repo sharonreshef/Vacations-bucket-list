@@ -20,7 +20,6 @@ const EditModal = ({
   editVacation,
   loading
 }) => {
-  console.log(vacation);
   const [formData, setFormData] = useState({
     vacationDescription: '',
     image: '',
@@ -39,14 +38,11 @@ const EditModal = ({
 
     if (Date.parse(formData.endingDate) <= Date.parse(formData.startingDate)) {
       alert('End date should be greater than Start date');
-      console.log('wrong dates');
       return;
     } else if (isNaN(formData.price)) {
       alert('price should be in numbers');
       return;
     } else {
-      console.log(formData);
-      console.log(vacationId, formData);
       editVacation(vacationId, formData, vacation);
       toggleModal(!displayModal);
     }
@@ -148,7 +144,7 @@ const EditModal = ({
 
 EditModal.propTypes = {
   getVacationData: PropTypes.func.isRequired,
-  vacation: PropTypes.object.isRequired,
+  vacation: PropTypes.array,
   editVacation: PropTypes.func.isRequired,
   loading: PropTypes.bool
 };

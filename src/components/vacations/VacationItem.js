@@ -2,11 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import { connect } from 'react-redux';
-import {
-  addFollow,
-  removeFollow,
-  deleteVacation
-} from '../../actions/vacation';
+import { addFollow, removeFollow } from '../../actions/vacation';
 
 import {
   MDBBtn,
@@ -27,7 +23,6 @@ const VacationItem = ({
   vacationsFollowedByUser,
   addFollow,
   removeFollow,
-  deleteVacation,
   vacation: { id, vacationDescription, image, startingDate, endingDate, price }
 }) => {
   let isFollowed;
@@ -35,7 +30,6 @@ const VacationItem = ({
     isFollowed = true;
   }
 
-  console.log(id);
   return (
     <MDBCol>
       <MDBCard style={{ width: '20rem' }} className='z-depth-1 mb-4 '>
@@ -43,30 +37,19 @@ const VacationItem = ({
         <MDBCardBody>
           <MDBCardTitle className='h5'>{vacationDescription}</MDBCardTitle>
           <MDBCardText>
-            <MDBCardText>
-              Starts on: <Moment format='DD/MM/YYYY'>{startingDate}</Moment>
-            </MDBCardText>
-            <MDBCardText>
-              Ends on: <Moment format='DD/MM/YYYY'>{endingDate}</Moment>
-            </MDBCardText>
-            <MDBCardText>
-              <strong>Price: {price}$</strong>
-            </MDBCardText>
+            Starts on: <Moment format='DD/MM/YYYY'>{startingDate}</Moment>
           </MDBCardText>
           <MDBCardText>
+            Ends on: <Moment format='DD/MM/YYYY'>{endingDate}</Moment>
+          </MDBCardText>
+          <MDBCardText>
+            <strong>Price: {price}$</strong>
+          </MDBCardText>
+          <div>
             {!loading && user.isAdmin && (
               <MDBRow>
                 <MDBCol size={6}>
                   <DeleteModal vacationId={id} />
-                  {/* <MDBBtn
-                    className='btn btn-danger'
-                    color='danger'
-                    onClick={e => {
-                      deleteVacation(id);
-                    }}
-                  >
-                    Delete
-                  </MDBBtn> */}
                 </MDBCol>
                 <MDBCol size={6}>
                   <EditModal vacationId={id} />
@@ -88,7 +71,7 @@ const VacationItem = ({
                 {isFollowed ? '  Unfollow' : '  Follow'}
               </MDBBtn>
             )}
-          </MDBCardText>
+          </div>
         </MDBCardBody>
       </MDBCard>
     </MDBCol>
@@ -100,7 +83,6 @@ VacationItem.propTypes = {
   auth: PropTypes.object.isRequired,
   addFollow: PropTypes.func.isRequired,
   removeFollow: PropTypes.func.isRequired,
-  deleteVacation: PropTypes.func.isRequired,
   vacationsFollowedByUser: PropTypes.array.isRequired
 };
 
@@ -111,5 +93,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { addFollow, removeFollow, deleteVacation }
+  { addFollow, removeFollow }
 )(VacationItem);

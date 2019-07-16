@@ -16,21 +16,8 @@ const Login = ({ login, isAuthenticated }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async e => {
-    // const user = {
-    //   email,
-    //   userPassword
-    // };
     e.preventDefault();
     login(email, userPassword);
-    // const response = await fetch(`http://localhost:5000/auth/`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(user)
-    // })
-    //   .then(response => response.json())
-    //   .then(response => console.log(response.token));
   };
 
   if (isAuthenticated) {

@@ -81,7 +81,7 @@ const Chart = ({ vacations, getVacations }) => {
 };
 
 Chart.propTypes = {
-  vacation: PropTypes.array.isRequired
+  vacation: PropTypes.array
 };
 
 const mapStateToProps = state => ({

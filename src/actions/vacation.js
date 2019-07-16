@@ -15,7 +15,6 @@ import {
 export const getVacationsfollowedByUser = () => async dispatch => {
   try {
     const res = await axios.get('http://localhost:5000/vacations/followed');
-    console.log(res.data);
     dispatch({
       type: GET_VACATIONSBYUSER,
       payload: res.data
@@ -46,7 +45,6 @@ export const getVacations = () => async dispatch => {
 
 // Get specific vacation data
 export const getVacationData = id => async dispatch => {
-  console.log('trying to get vacation data');
   try {
     const res = await axios.get(`http://localhost:5000/vacations/${id}`);
     dispatch({
@@ -63,7 +61,6 @@ export const getVacationData = id => async dispatch => {
 
 // Add follow
 export const addFollow = vacationId => async dispatch => {
-  console.log('adding');
   try {
     const res = await axios.put(
       `http://localhost:5000/vacations/follow/${vacationId}`
@@ -143,7 +140,6 @@ export const addVacation = formData => async dispatch => {
       formData,
       config
     );
-    console.log(res);
     dispatch({
       type: ADD_VACATION,
       payload: res.data
@@ -191,14 +187,12 @@ export const editVacation = (
     formData.price = vacation[0].price;
   }
 
-  console.log(vacationId, formData, vacation);
   try {
     const res = await axios.put(
       `http://localhost:5000/vacations/${vacationId}`,
       formData,
       config
     );
-    console.log(res);
     dispatch({
       type: EDIT_VACATION,
       payload: res.data
