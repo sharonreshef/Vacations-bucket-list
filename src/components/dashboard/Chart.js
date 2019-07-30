@@ -8,6 +8,10 @@ import { Bar } from 'react-chartjs-2';
 const Chart = ({ vacations, getVacations }) => {
   useEffect(() => {
     getVacations();
+    const interval = setInterval(() => {
+      getVacations();
+    }, 3000);
+    return () => clearInterval(interval);
   }, [getVacations]);
 
   const followedVacationsArr = vacations.reduce(

@@ -22,6 +22,11 @@ const Vacations = ({
   useEffect(() => {
     getVacations();
     getVacationsfollowedByUser();
+    const interval = setInterval(() => {
+      getVacations();
+      getVacationsfollowedByUser();
+    }, 3000);
+    return () => clearInterval(interval);
   }, [getVacations, getVacationsfollowedByUser]);
 
   const vacationsNotFollowed = differenceBy(

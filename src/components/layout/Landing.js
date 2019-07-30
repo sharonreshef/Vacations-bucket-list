@@ -14,8 +14,8 @@ const Landing = ({ isAuthenticated }) => {
         <div className='landing-inner'>
           <h1 className='x-large'>My Vacations Bucketlist</h1>
           <p className='lead'>
-            Save your desire bucketlist vacations to see and be updated about
-            the best prices and dates avilable
+            Save your desired bucketlist vacations to see and be updated about
+            the best prices and dates available
           </p>
           <div className='buttons'>
             <Link to='/register' className='btn btn-primary'>
