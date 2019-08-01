@@ -9,10 +9,10 @@ const admin = require('../middleware/admin');
 let pool;
 (async function initializePool() {
   pool = await mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '12345678',
-    database: 'mynextvacation',
+    host: 'arfo8ynm6olw6vpn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: 'lhxvwb5br09qed9q',
+    password: 'zbr09pqsq16q5x0f',
+    database: 'sjs4cydlaupisok1',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
@@ -55,7 +55,6 @@ router.post('/', [auth, admin], async (req, res) => {
 // @desc    Delete a vacation
 // @access  Private
 router.delete('/:id', [auth, admin], async (req, res) => {
-
   try {
     const [results] = await pool.execute(
       `SELECT * FROM savedvacations WHERE vacationId=?`,

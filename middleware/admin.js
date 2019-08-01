@@ -4,10 +4,10 @@ const mysql = require('mysql2/promise');
 
 module.exports = async function(req, res, next) {
   const connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '12345678',
-    database: 'mynextvacation'
+    host: 'arfo8ynm6olw6vpn.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: 'lhxvwb5br09qed9q',
+    password: 'zbr09pqsq16q5x0f',
+    database: 'sjs4cydlaupisok1'
   });
 
   const [rows, fields] = await connection.execute(

@@ -14,7 +14,7 @@ import {
 // Get Vacations followed by user
 export const getVacationsfollowedByUser = () => async dispatch => {
   try {
-    const res = await axios.get('http://localhost:5000/vacations/followed');
+    const res = await axios.get('/vacations/followed');
     dispatch({
       type: GET_VACATIONSBYUSER,
       payload: res.data
@@ -30,7 +30,7 @@ export const getVacationsfollowedByUser = () => async dispatch => {
 // Get Vacations
 export const getVacations = () => async dispatch => {
   try {
-    const res = await axios.get('http://localhost:5000/vacations/');
+    const res = await axios.get('/vacations/');
     dispatch({
       type: GET_VACATIONS,
       payload: res.data
@@ -46,7 +46,7 @@ export const getVacations = () => async dispatch => {
 // Get specific vacation data
 export const getVacationData = id => async dispatch => {
   try {
-    const res = await axios.get(`http://localhost:5000/vacations/${id}`);
+    const res = await axios.get(`/vacations/${id}`);
     dispatch({
       type: GET_VACATIONDATA,
       payload: res.data
@@ -62,9 +62,7 @@ export const getVacationData = id => async dispatch => {
 // Add follow
 export const addFollow = vacationId => async dispatch => {
   try {
-    const res = await axios.put(
-      `http://localhost:5000/vacations/follow/${vacationId}`
-    );
+    const res = await axios.put(`/vacations/follow/${vacationId}`);
     dispatch({
       type: UPDATE_FOLLOWERS
     });
@@ -85,9 +83,7 @@ export const addFollow = vacationId => async dispatch => {
 // Remove follow
 export const removeFollow = vacationId => async dispatch => {
   try {
-    const res = await axios.put(
-      `http://localhost:5000/vacations/unfollow/${vacationId}`
-    );
+    const res = await axios.put(`/vacations/unfollow/${vacationId}`);
     dispatch({
       type: UPDATE_FOLLOWERS
     });
@@ -108,7 +104,7 @@ export const removeFollow = vacationId => async dispatch => {
 // Delete vacation
 export const deleteVacation = vacationId => async dispatch => {
   try {
-    await axios.delete(`http://localhost:5000/vacations/${vacationId}`);
+    await axios.delete(`/vacations/${vacationId}`);
     dispatch({
       type: DELETE_VACATION,
       payload: vacationId
@@ -135,11 +131,7 @@ export const addVacation = formData => async dispatch => {
     }
   };
   try {
-    const res = await axios.post(
-      `http://localhost:5000/vacations/`,
-      formData,
-      config
-    );
+    const res = await axios.post(`/vacations/`, formData, config);
     dispatch({
       type: ADD_VACATION,
       payload: res.data
@@ -188,11 +180,7 @@ export const editVacation = (
   }
 
   try {
-    const res = await axios.put(
-      `http://localhost:5000/vacations/${vacationId}`,
-      formData,
-      config
-    );
+    const res = await axios.put(`/vacations/${vacationId}`, formData, config);
     dispatch({
       type: EDIT_VACATION,
       payload: res.data
