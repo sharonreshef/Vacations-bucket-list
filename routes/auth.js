@@ -15,7 +15,7 @@ let pool;
     password: 'zbr09pqsq16q5x0f',
     database: 'sjs4cydlaupisok1',
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 100,
     queueLimit: 0
   });
 })();
