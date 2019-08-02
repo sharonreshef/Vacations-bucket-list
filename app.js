@@ -13,9 +13,9 @@ var vacationsRouter = require('./routes/vacations');
 var app = express();
 app.use(cors());
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -34,25 +34,25 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error pagey
-  res.status(err.status || 500);
-  res.render('error');
-});
+//   // render the error pagey
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
 //Serve static asset in production
-// if (process.env.NODE_ENV === 'production') {
-//set static folder
-app.use(express.static('client/build'));
+if (process.env.NODE_ENV === 'production') {
+  // set static folder
+  app.use(express.static('client/build'));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
-// }
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 
