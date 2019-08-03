@@ -16,7 +16,6 @@ export const loadUser = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
-
   try {
     const res = await axios.get('/auth/');
     dispatch({
@@ -30,8 +29,7 @@ export const loadUser = () => async dispatch => {
   }
 };
 
-/// Register User
-
+// Register User
 export const register = ({
   firstName,
   lastName,
@@ -67,8 +65,7 @@ export const register = ({
   }
 };
 
-/// LOGIN USER
-
+// LOGIN USER
 export const login = (email, userPassword) => async dispatch => {
   const config = {
     headers: {

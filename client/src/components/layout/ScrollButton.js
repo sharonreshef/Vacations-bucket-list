@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import './ScrollButton.css';
 
@@ -37,7 +36,7 @@ class ScrollButton extends React.Component {
         }}
       >
         <span>
-          <i class='fas fa-angle-up' />
+          <i className='fas fa-angle-up' />
         </span>
       </button>
     );

@@ -108,6 +108,7 @@ const NewVacation = ({ addVacation }) => {
                         type='date'
                         label='Start date'
                         name='startingDate'
+                        min={new Date().toISOString().split('T')[0]}
                         valueDefault={startingDate}
                         onChange={e => onChange(e)}
                         required
@@ -118,6 +119,7 @@ const NewVacation = ({ addVacation }) => {
                         type='date'
                         label='End date'
                         name='endingDate'
+                        min={new Date().toISOString().split('T')[0]}
                         valueDefault={endingDate}
                         onChange={e => onChange(e)}
                         required

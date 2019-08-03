@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
+import './Navbar.css';
 
 // style
 import {
@@ -9,10 +10,18 @@ import {
   MDBNavbarBrand,
   MDBNavbarNav,
   MDBNavItem,
-  MDBNavLink
+  MDBNavLink,
+  MDBCollapse,
+  MDBNavbarToggler
 } from 'mdbreact';
 
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
+  const [collapse, setCollapse] = useState({
+    collapse: false
+  });
+
+  const onClick = () => setCollapse(!collapse);
+
   const authLinks = (
     <MDBNavbarNav right>
       <MDBNavItem>
@@ -58,7 +67,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
   );
 
   return (
-    <MDBNavbar color='info-color' expand='md' className='navbar'>
+    <MDBNavbar color='info-color' expand='md' scrolling className='navbar'>
       <MDBNavbarBrand>
         <MDBNavLink to='/'>
           {' '}
@@ -69,18 +78,21 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
       </MDBNavbarBrand>
       {!loading && isAuthenticated && (
         <MDBNavbarNav right>
-          <MDBNavItem className='user-name'>
+          <MDBNavItem className='user-name hide-sm'>
             Welcome {user.firstName}
           </MDBNavItem>
         </MDBNavbarNav>
       )}
       {!loading && (
         <Fragment>
-          {isAuthenticated && user.isAdmin
-            ? adminLinks
-            : isAuthenticated
-            ? authLinks
-            : guestLinks}
+          <MDBNavbarToggler onClick={onClick} />
+          <MDBCollapse isOpen={collapse} navbar>
+            {isAuthenticated && user.isAdmin
+              ? adminLinks
+              : isAuthenticated
+              ? authLinks
+              : guestLinks}
+          </MDBCollapse>
         </Fragment>
       )}
     </MDBNavbar>

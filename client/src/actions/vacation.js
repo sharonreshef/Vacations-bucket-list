@@ -109,6 +109,7 @@ export const deleteVacation = vacationId => async dispatch => {
       type: DELETE_VACATION,
       payload: vacationId
     });
+    dispatch(getVacations());
     dispatch(setAlert('Vacation Removed', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
