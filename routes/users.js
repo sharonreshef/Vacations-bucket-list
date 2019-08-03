@@ -14,18 +14,21 @@ let pool;
     password: 'zbr09pqsq16q5x0f',
     database: 'sjs4cydlaupisok1',
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 8,
     queueLimit: 0
   });
 })();
 
+// @route   POST /users
+// @desc    Test
+// @access  Public
 router.get('/', async (req, res) => {
   const [results, fields] = await pool.execute(`SELECT * FROM users`);
 
   res.send(results);
 });
 
-// @route   POST api/users
+// @route   POST /users
 // @desc    Register user
 // @access  Public
 router.post(
@@ -83,7 +86,6 @@ router.post(
       const [user] = await pool.execute(`SELECT * FROM users WHERE email=?`, [
         email
       ]);
-      // res.send({ status: 'success', firstName: firstName, user: user });
 
       const payload = {
         user: {

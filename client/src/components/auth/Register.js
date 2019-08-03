@@ -52,7 +52,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             name='firstName'
             value={firstName}
             onChange={e => onChange(e)}
-            // required
+            required
           />
         </div>
         <div className='form-group'>
@@ -62,7 +62,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             name='lastName'
             value={lastName}
             onChange={e => onChange(e)}
-            // required
+            required
           />
         </div>
         <div className='form-group'>
@@ -80,7 +80,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='password'
             placeholder='Password'
             name='userPassword'
-            // minLength='6'
+            minLength='6'
             value={userPassword}
             onChange={e => onChange(e)}
           />
@@ -90,7 +90,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='password'
             placeholder='Confirm Password'
             name='userPassword2'
-            // minLength='6'
+            minLength='6'
             value={userPassword2}
             onChange={e => onChange(e)}
           />

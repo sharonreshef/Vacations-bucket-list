@@ -9,6 +9,7 @@ import {
   getVacationsfollowedByUser
 } from '../../actions/vacation';
 import NewVacation from './NewVacation';
+import ScrollButton from '../layout/ScrollButton';
 
 import { MDBRow } from 'mdbreact';
 
@@ -64,6 +65,7 @@ const Vacations = ({
           <VacationItem key={vacation.id} vacation={vacation} />
         ))}
       </MDBRow>
+      <ScrollButton scrollStepInPx='50' delayInMs='16.66' />
     </Fragment>
   );
 };
@@ -77,8 +79,6 @@ Vacations.propTypes = {
 const mapStateToProps = state => ({
   vacation: state.vacation,
   auth: state.auth
-  // isAuthenticated: state.auth.isAuthenticated,
-  // user: state.auth.user
 });
 
 export default connect(

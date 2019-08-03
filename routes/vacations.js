@@ -14,7 +14,7 @@ let pool;
     password: 'zbr09pqsq16q5x0f',
     database: 'sjs4cydlaupisok1',
     waitForConnections: true,
-    connectionLimit: 100,
+    connectionLimit: 8,
     queueLimit: 0,
     dateStrings: true
   });
@@ -146,6 +146,10 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// @route   GET /vacations/followed
+// @desc    Get all vacations followed by user
+// @access  Private
+
 router.get('/followed', auth, async (req, res) => {
   try {
     const [vacations, fields] = await pool.execute(
@@ -178,30 +182,10 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// @route   GET /vacations/followed
-// @desc    Get all vacations followed by user
-// @access  Private
-
-// router.get('/followed', auth, async (req, res) => {
-//   console.log('followed');
-//   try {
-//     const [vacations, fields] = await pool.execute(
-//       `SELECT * from vacations
-//     INNER JOIN savedvacations on savedvacations.vacationId = vacations.id
-//     WHERE savedvacations.userID = ?`,
-//       [req.user.id]
-//     );
-//     res.json(vacations);
-//     console.log(vacations);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server Error');
-//   }
-// });
-
 // @route   PUT /vacations/follow/:id
 // @desc    Follow a vacation
 // @access  Private
+
 router.put('/follow/:id', auth, async (req, res) => {
   try {
     const [vacation] = await pool.execute(
